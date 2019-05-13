@@ -41,7 +41,7 @@ class Loader
     {
         if (file_exists($this->path)) {
             $finder = new Finder();
-            $finder->in($pathname)->name(["*.json", "*.php", "*.yml", "*.yaml"]);
+            $finder->in($this->path)->name(["*.json", "*.php", "*.yml", "*.yaml"]);
             if ($finder->hasResults()) {
                 foreach ($finder->sortByName(true) as $file) {
                     $this->config = new Config($file->getFileInfo());
