@@ -6,6 +6,7 @@ use Noodlehaus\Config;
 use Sober\Models\ConfigNoFile;
 use Sober\Models\Model\PostType;
 use Sober\Models\Model\Taxonomy;
+use Symfony\Component\Finder\Finder;
 
 class Loader
 {
@@ -39,10 +40,11 @@ class Loader
     protected function load()
     {
         if (file_exists($this->path)) {
-            $path = new \RecursiveDirectoryIterator($this->path);
-            foreach (new \RecursiveIteratorIterator($path) as $filename => $file) {
-                if (in_array(pathinfo($file, PATHINFO_EXTENSION), ['json', 'php', 'yml', 'yaml'])) {
-                    $this->config = new Config($file);
+            $finder = new Finder();
+            $finder->in($pathname)->name(["*.json", "*.php", "*.yml", "*.yaml"]);
+            if ($finder->hasResults()) {
+                foreach ($finder->sortByName(true) as $file) {
+                    $this->config = new Config($file->getFileInfo());
                     ($this->isMultiple() ? $this->loadEach() : $this->route($this->config));
                 }
             }
